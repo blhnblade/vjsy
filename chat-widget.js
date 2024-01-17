@@ -170,7 +170,6 @@ let chat = {
     }
   },
   sendingToChat(){
-    console.log(this)
     this.chatSubmit.addEventListener('click', () => {
       const message = this.chatInput.value.trim();
       if (!message) return;
@@ -229,7 +228,6 @@ let chat = {
   },
 
   reply(message){
-    // const chatMessages = document.getElementById('chat-messages');
     const replyElement = document.createElement('div');
     replyElement.className = 'flex mb-3';
     replyElement.innerHTML = `
@@ -243,58 +241,3 @@ let chat = {
   }
 }
 chat.init()
-console.log(document.querySelector('#chat-popup').classList)
-// (function() {
-  
-
-
-
-  
-
-  
-
-//   function togglePopup() {
-//     const chatPopup = document.getElementById('chat-popup');
-//     chatPopup.classList.toggle('hidden');
-//     if (!chatPopup.classList.contains('hidden')) {
-//       document.getElementById('chat-input').focus();
-//     }
-//   }  
-
-//   function onUserRequest(message) {
-//     // Handle user request here
-//     console.log('User request:', message);
-  
-//     // Display user message
-//     const messageElement = document.createElement('div');
-//     messageElement.className = 'flex justify-end mb-3';
-//     messageElement.innerHTML = `
-//       <div class="bg-gray-800 text-white rounded-lg py-2 px-4 max-w-[70%]">
-//         ${message}
-//       </div>
-//     `;
-//     chatMessages.appendChild(messageElement);
-//     chatMessages.scrollTop = chatMessages.scrollHeight;
-  
-//     chatInput.value = '';
-  
-//     // Reply to the user
-//     setTimeout(function() {
-//       reply('Hello! This is a sample reply.');
-//     }, 1000);
-//   }
-  
-//   function reply(message) {
-//     const chatMessages = document.getElementById('chat-messages');
-//     const replyElement = document.createElement('div');
-//     replyElement.className = 'flex mb-3';
-//     replyElement.innerHTML = `
-//       <div class="bg-gray-200 text-black rounded-lg py-2 px-4 max-w-[70%]">
-//         ${message}
-//       </div>
-//     `;
-//     chatMessages.appendChild(replyElement);
-//     chatMessages.scrollTop = chatMessages.scrollHeight;
-//   }
-  
-// })();
