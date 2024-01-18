@@ -8,9 +8,8 @@ let chat = {
     this.openChat()
     this.closeChat()
     this.textareaAutoSizeWidth()
-    this.textareaInsertingClearText()
-    this.textareaCancelNewlineOn()
     this.resizeChatWidth()
+    this.textareaAutoHeight()
   },
   insertChat(){
     // document.head.insertAdjacentHTML('beforeend', '<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.16/tailwind.min.css" rel="stylesheet">');  
@@ -143,16 +142,15 @@ let chat = {
     }
     
     .chat-input-container{
-      padding: 16px;
+      border-top: 1px solid var(--border-border-gray-200, #E5E7EB);
       border-top-width: 1px;
       border-color: rgba(229,231,235,1);
-      border-top: 1px solid var(--border-border-gray-200, #E5E7EB);
+      padding: 16px;
       background: #FFF;
     }
 
     .chat-input-container-inner{
       display: flex;
-      align-items: flex-end;
       column-gap: 16px;
     }
 
@@ -166,19 +164,13 @@ let chat = {
       padding: 8px 16px;
       outline: none;
       border: none;
-      height: auto;
+      resize: none;
+      height: 36px;
       max-height: 136px;
       overflow-y: auto;
-      resize: none;
       word-break: break-word;
       scrollbar-width: thin;
       scrollbar-color: #888 #F2F3F7;
-    }
-
-    .chat-input:empty::before{
-      content: 'Написать сообщение...';
-      pointer-events: none;
-      color: rgba(25, 44, 61, 0.50);
     }
 
     .chat-input::-webkit-scrollbar {
@@ -201,7 +193,7 @@ let chat = {
       height: 36px;
       background: #2A63EF;
       border: none;
-      vertical-align: center
+      align-self: flex-end;
     }
 
     .chat-submit svg{
@@ -330,7 +322,7 @@ let chat = {
         <div id="chat-messages" class="chat-messages"></div>
         <div id="chat-input-container" class="chat-input-container">
           <div class="chat-input-container-inner">
-            <div contenteditable="true" id="chat-input" class="chat-input"></div>
+            <textarea id="chat-input" class="chat-input" placeholder="Написать сообщение..."></textarea>
             <button id="chat-submit" class="chat-submit">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M12 5V19M12 5L18 11M12 5L6 11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -356,13 +348,16 @@ let chat = {
       this.chatMessages.style.paddingRight = '13px';
     }
   },
+  messagesContainerCheckWidth(){
+    if(window.innerWidth > 768 && this.chatMessages.clientHeight < this.chatMessages.scrollHeight){ 
+      this.chatMessages.style.paddingRight = '13px';
+    } else {
+      this.chatMessages.style.paddingRight = '16px';
+    }
+  },
   resizeChatWidth(){
     window.addEventListener('resize', () => {
-      if(window.innerWidth > 768 && this.chatMessages.clientHeight < this.chatMessages.scrollHeight){ 
-        this.chatMessages.style.paddingRight = '13px';
-      } else {
-        this.chatMessages.style.paddingRight = '16px';
-      }
+      this.messagesContainerCheckWidth()
     })
   },
   textareaCheckWidth(){
@@ -379,28 +374,23 @@ let chat = {
       this.textareaCheckWidth();
     })
   },
-  textareaInsertingClearText(){
-    this.chatInput.addEventListener('paste', (e) => {
-      e.preventDefault();
-      var pastedText = (e.clipboardData || window.clipboardData).getData('text/plain');
-      document.execCommand('insertText', false, pastedText);
-      this.textareaCheckWidth();
-    })
+  textareaCheckHeight(){
+    this.chatInput.style.height = "36px"
+    this.chatInput.style.height = this.chatInput.scrollHeight + 'px'; 
   },
-  textareaCancelNewlineOn(){
-    this.chatInput.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter'){
-        e.preventDefault()
-      }
+  textareaAutoHeight(){
+    this.chatInput.addEventListener('input', ()=>{
+      this.textareaCheckHeight()
     })
   },
   sendingToChat(){
     this.chatSubmit.addEventListener('click', () => {
-      const message = this.chatInput.textContent.trim();
+      const message = this.chatInput.value.trim();
       if (!message) return;
       this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
       this.onUserRequest(message);
       this.autoSizeWidth()
+      this.textareaCheckHeight()
     });
   },
   sendingUsingEnter(){
@@ -443,7 +433,7 @@ let chat = {
     this.chatMessages.appendChild(messageElement);
     this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
   
-    this.chatInput.textContent = '';
+    this.chatInput.value = '';
   
     // Reply to the user
     setTimeout(() => {
